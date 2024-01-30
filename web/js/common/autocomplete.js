@@ -318,6 +318,7 @@ export class TextAreaAutoComplete {
 	static insertOnEnter = true;
 	static replacer = undefined;
 	static lorasEnabled = false;
+	static searchSpacesAsUnderscores = false;
 
 	/** @type {Record<string, Record<string, AutoCompleteEntry>>} */
 	static groups = {};
@@ -468,7 +469,10 @@ export class TextAreaAutoComplete {
 				continue;
 			}
 
-			const pos = lowerWord.indexOf(term);
+			let pos = lowerWord.indexOf(term);
+			if (pos === -1 && TextAreaAutoComplete.searchSpacesAsUnderscores) {
+				pos = lowerWord.replaceAll("_", " ").indexOf(term);
+			}
 			if (pos === -1) {
 				// No match
 				continue;
@@ -498,9 +502,9 @@ export class TextAreaAutoComplete {
 	#update() {
 		let before = this.helper.getBeforeCursor();
 		if (before?.length) {
-			const m = before.match(/([^\s|,|;|"]+)$/);
+			const m = TextAreaAutoComplete.searchSpacesAsUnderscores ? before.match(/([^,|;|"]+)$/) : before.match(/([^\s|,|;|"]+)$/);
 			if (m) {
-				before = m[0];
+				before = m[0].trimStart();
 			} else {
 				before = null;
 			}

@@ -467,6 +467,26 @@ app.registerExtension({
 						$el(
 							"label",
 							{
+								textContent: "Spaces act as _ on search ",
+								style: {
+									display: "block",
+								},
+							},
+							[
+								$el("input", {
+									type: "checkbox",
+									checked: !!TextAreaAutoComplete.searchSpacesAsUnderscores,
+									onchange: (event) => {
+										const checked = !!event.target.checked;
+										TextAreaAutoComplete.searchSpacesAsUnderscores = checked;
+										localStorage.setItem(id + ".SearchSpacesAsUnderscores", checked);
+									},
+								}),
+							]
+						),
+						$el(
+							"label",
+							{
 								textContent: "Insert suggestion on: ",
 								style: {
 									display: "block",
@@ -539,6 +559,7 @@ app.registerExtension({
 		TextAreaAutoComplete.insertOnTab = localStorage.getItem(id + ".InsertOnTab") !== "false";
 		TextAreaAutoComplete.insertOnEnter = localStorage.getItem(id + ".InsertOnEnter") !== "false";
 		TextAreaAutoComplete.lorasEnabled = localStorage.getItem(id + ".ShowLoras") === "true";
+		TextAreaAutoComplete.searchSpacesAsUnderscores = localStorage.getItem(id + ".SearchSpacesAsUnderscores") === "true";
 	},
 	beforeRegisterNodeDef(_, def) {
 		// Process each input to see if there is a custom word list for
